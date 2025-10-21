@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Mis Notas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+            transform: translateY(-2px);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            margin: 15px 0;
+            transition: border 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .editor-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .toolbar button {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .toolbar button:hover {
+            background: #f7fafc;
+            border-color: #667eea;
+        }
+
+        .note-title {
+            width: 100%;
+            padding: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .note-title:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .note-content {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .note-content:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: 2px solid #cbd5e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .category-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .note-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .note-card h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .note-card p {
+            color: #718096;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .note-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #edf2f7;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .note-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .note-card:hover .note-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .edit-btn {
+            background: #4299e1;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #f56565;
+            color: white;
+        }
+
+        .pin-btn {
+            background: #ed8936;
+            color: white;
+        }
+
+        .pinned {
+            border: 2px solid #ed8936;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .config-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .config-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .config-section input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .config-section input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .config-section code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .config-section .help-text {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-offline {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-online {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .config-steps {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .config-steps ol {
+            margin-left: 20px;
+        }
+
+        .config-steps li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .config-steps a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .config-steps a:hover {
+            text-decoration: underline;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-buttons {
+                justify-content: center;
+            }
+
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>📘 Mis Notas</h1>
+                    <span class="status-indicator status-offline" id="statusIndicator">
+                        ⚪ Modo Local
+                    </span>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-primary" onclick="toggleEditor()">✏️ Nueva Nota</button>
+                    <button class="btn btn-warning" onclick="showConfig()">⚙️ Configurar GitHub</button>
+                    <button class="btn btn-secondary" onclick="syncWithGitHub()">🔄 Sincronizar</button>
+                    <button class="btn btn-secondary" onclick="exportNotes()">📤 Exportar</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importar</button>
+                    <button class="btn btn-danger" onclick="showStats()">📊 Estadísticas</button>
+                </div>
+            </div>
+            <input type="text" class="search-bar" id="searchBar" placeholder="🔍 Buscar notas..." onkeyup="searchNotes()">
+        </header>
+
+        <div class="editor-section" id="editorSection" style="display: none;">
+            <div class="editor-header">
+                <h2>✍️ Editor de Notas</h2>
+                <button class="btn btn-primary" onclick="saveNote()">💾 Guardar</button>
+            </div>
+            
+            <div class="toolbar">
+                <button onclick="insertList()">📋 Lista</button>
+                <button onclick="insertCheckbox()">☑️ Checkbox</button>
+            </div>
+
+            <input type="text" class="note-title" id="noteTitle" placeholder="Título de la nota...">
+            
+            <div class="categories">
+                <button class="category-btn active" data-category="Personal" onclick="selectCategory(this)">👤 Personal</button>
+                <button class="category-btn" data-category="Trabajo" onclick="selectCategory(this)">💼 Trabajo</button>
+                <button class="category-btn" data-category="Ideas" onclick="selectCategory(this)">💡 Ideas</button>
+                <button class="category-btn" data-category="Tareas" onclick="selectCategory(this)">✅ Tareas</button>
+                <button class="category-btn" data-category="Compras" onclick="selectCategory(this)">🛒 Compras</button>
+            </div>
+
+            <textarea class="note-content" id="noteContent" placeholder="Escribe tu nota aquí..."></textarea>
+        </div>
+
+        <div class="notes-grid" id="notesGrid"></div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <h2>📝 No hay notas todavía</h2>
+            <p>Crea tu primera nota para comenzar</p>
+        </div>
+    </div>
+
+    <!-- Modal de Configuración GitHub -->
+    <div class="modal" id="configModal">
+        <div class="modal-content">
+            <h2>⚙️ Configuración de GitHub</h2>
+            
+            <div class="config-section">
+                <h3>📋 Pasos para configurar GitHub:</h3>
+                <div class="config-steps">
+                    <ol>
+                        <li>Ve a <a href="https://github.com/new" target="_blank">github.com/new</a> y crea un repositorio</li>
+                        <li>Dale un nombre (ejemplo: <code>mis-notas</code>)</li>
+                        <li>Márcalo como <strong>Private</strong> (privado)</li>
+                        <li>Haz clic en "Create repository"</li>
+                        <li>Ve a <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></li>
+                        <li>Haz clic en "Generate new token" → "Generate new token (classic)"</li>
+                        <li>Dale un nombre: <code>Mis Notas App</code></li>
+                        <li>Marca solo el checkbox <code>repo</code></li>
+                        <li>Haz clic en "Generate token" y <strong>COPIA EL TOKEN</strong></li>
+                        <li>Pega tus datos aquí abajo ⬇️</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>🔑 Credenciales de GitHub:</h3>
+                <input type="text" id="githubUsername" placeholder="Tu usuario de GitHub (ejemplo: tuusuario)">
+                <input type="text" id="githubRepo" placeholder="Nombre del repositorio (ejemplo: mis-notas)">
+                <input type="password" id="githubToken" placeholder="Personal Access Token (ghp_xxxxx...)">
+                <p class="help-text">💡 Estas credenciales se guardarán de forma segura en tu navegador</p>
+                <p class="help-text">🔒 El token solo tiene acceso a tu repositorio, nadie más puede verlo</p>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="saveGitHubConfig()">💾 Guardar y Conectar</button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="closeConfigModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Estadísticas -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <h2>📊 Estadísticas de Notas</h2>
+            <div class="stats" id="statsContainer"></div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="closeStatsModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" accept=".json" onchange="importNotes(event)">
+
+    <script>
+        let notes = [];
+        let currentNoteId = null;
+        let currentCategory = 'Personal';
+        let githubConfig = null;
+
+        // Cargar notas al iniciar
+        window.onload = function() {
+            loadGitHubConfig();
+            loadNotes();
+            displayNotes();
+        };
+
+        function loadGitHubConfig() {
+            const config = localStorage.getItem('githubConfig');
+            if (config) {
+                try {
+                    githubConfig = JSON.parse(config);
+                    updateStatus(true);
+                    loadNotesFromGitHub();
+                } catch (error) {
+                    console.error('Error al cargar configuración:', error);
+                }
+            }
+        }
+
+        function updateStatus(online) {
+            const indicator = document.getElementById('statusIndicator');
+            if (online && githubConfig) {
+                indicator.className = 'status-indicator status-online';
+                indicator.innerHTML = '🟢 Conectado a GitHub';
+            } else {
+                indicator.className = 'status-indicator status-offline';
+                indicator.innerHTML = '⚪ Modo Local';
+            }
+        }
+
+        function showConfig() {
+            const modal = document.getElementById('configModal');
+            modal.classList.add('active');
+
+            if (githubConfig) {
+                document.getElementById('githubUsername').value = githubConfig.username || '';
+                document.getElementById('githubRepo').value = githubConfig.repo || '';
+                document.getElementById('githubToken').value = githubConfig.token || '';
+            }
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.remove('active');
+        }
+
+        function saveGitHubConfig() {
+            const username = document.getElementById('githubUsername').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const token = document.getElementById('githubToken').value.trim();
+
+            if (!username || !repo || !token) {
+                alert('⚠️ Por favor completa todos los campos');
+                return;
+            }
+
+            githubConfig = { username, repo, token };
+            localStorage.setItem('githubConfig', JSON.stringify(githubConfig));
+            updateStatus(true);
+            closeConfigModal();
+            alert('✅ GitHub configurado correctamente. Usa el botón "🔄 Sincronizar" para guardar tus notas.');
+        }
+
+        async function syncWithGitHub() {
+            if (!githubConfig) {
+                alert('⚠️ Primero configura GitHub en "⚙️ Configurar GitHub"');
+                return;
+            }
+
+            try {
+                const content = btoa(unescape(encodeURIComponent(JSON.stringify(notes, null, 2))));
+                const url = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/notas.json`;
+
+                // Intentar obtener el SHA del archivo existente
+                let sha = null;
+                try {
+                    const getResponse = await fetch(url, {
+                        headers: {
+                            'Authorization': `token ${githubConfig.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    if (getResponse.ok) {
+                        const data = await getResponse.json();
+                        sha = data.sha;
+                    }
+                } catch (e) {
+                    // El archivo no existe todavía
+                }
+
+                // Crear o actualizar el archivo
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: `Actualización de notas - ${new Date().toLocaleString('es-MX')}`,
+                        content: content,
+                        ...(sha && { sha })
+                    })
+                });
+
+                if (response.ok) {
+                    alert('✅ Notas sincronizadas correctamente con GitHub');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Error al sincronizar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error al sincronizar: ' + error.message);
+            }
+        }
+
+        async function loadNotesFromGitHub() {
+            if (!githubConfig) return;
+
+            try {
+                const url = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/notas.json`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = decodeURIComponent(escape(atob(data.content)));
+                    const githubNotes = JSON.parse(content);
+                    
+                    if (githubNotes.length > 0) {
+                        notes = githubNotes;
+                        saveToStorage();
+                        displayNotes();
+                    }
+                }
+            } catch (error) {
+                console.log('No hay notas en GitHub todavía o error al cargar:', error.message);
+            }
+        }
+
+        function loadNotes() {
+            const saved = localStorage.getItem('myNotes');
+            if (saved) {
+                notes = JSON.parse(saved);
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+        }
+
+        function toggleEditor() {
+            const editor = document.getElementById('editorSection');
+            editor.style.display = editor.style.display === 'none' ? 'block' : 'none';
+            
+            if (editor.style.display === 'block') {
+                document.getElementById('noteTitle').value = '';
+                document.getElementById('noteContent').value = '';
+                currentNoteId = null;
+                currentCategory = 'Personal';
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.category === 'Personal') {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function selectCategory(btn) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.category;
+        }
+
+        function saveNote() {
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+
+            if (!title && !content) {
+                alert('Por favor escribe un título o contenido');
+                return;
+            }
+
+            const note = {
+                id: currentNoteId || Date.now().toString(),
+                title: title || 'Sin título',
+                content: content,
+                category: currentCategory,
+                date: new Date().toLocaleString('es-MX'),
+                pinned: false
+            };
+
+            if (currentNoteId) {
+                const index = notes.findIndex(n => n.id == currentNoteId);
+                if (index !== -1) {
+                    notes[index] = { ...notes[index], ...note };
+                }
+            } else {
+                notes.unshift(note);
+            }
+
+            saveToStorage();
+            displayNotes();
+            toggleEditor();
+            
+            if (githubConfig) {
+                alert('💾 Nota guardada localmente. No olvides hacer clic en "🔄 Sincronizar" para subirla a GitHub');
+            }
+        }
+
+        function displayNotes(filterNotes = notes) {
+            const grid = document.getElementById('notesGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filterNotes.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            
+            const pinnedNotes = filterNotes.filter(n => n.pinned);
+            const regularNotes = filterNotes.filter(n => !n.pinned);
+            const sortedNotes = [...pinnedNotes, ...regularNotes];
+
+            grid.innerHTML = sortedNotes.map(note => `
+                <div class="note-card ${note.pinned ? 'pinned' : ''}" onclick="editNote('${note.id}')">
+                    <div class="note-actions">
+                        <button class="action-btn pin-btn" onclick="event.stopPropagation(); togglePin('${note.id}')">${note.pinned ? '📌' : '📍'}</button>
+                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editNote('${note.id}')">✏️</button>
+                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteNote('${note.id}')">🗑️</button>
+                    </div>
+                    <h3>${note.title}</h3>
+                    <p>${note.content}</p>
+                    <div class="note-meta">
+                        <span class="note-category">${note.category}</span>
+                        <span>${note.date}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editNote(id) {
+            const note = notes.find(n => n.id == id);
+            if (!note) return;
+
+            currentNoteId = id;
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            currentCategory = note.category;
+
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === note.category) {
+                    btn.classList.add('active');
+                }
+            });
+
+            document.getElementById('editorSection').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteNote(id) {
+            if (!confirm('¿Estás seguro de eliminar esta nota?')) return;
+            notes = notes.filter(n => n.id != id);
+            saveToStorage();
+            displayNotes();
+            
+            if (githubConfig) {
+                alert('🗑️ Nota eliminada localmente. Haz clic en "🔄 Sincronizar" para actualizar GitHub');
+            }
+        }
+
+        function togglePin(id) {
+            const note = notes.find(n => n.id == id);
+            if (note) {
+                note.pinned = !note.pinned;
+                saveToStorage();
+                displayNotes();
+            }
+        }
+
+        function searchNotes() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            const filtered = notes.filter(note => 
+                note.title.toLowerCase().includes(query) || 
+                note.content.toLowerCase().includes(query) ||
+                note.category.toLowerCase().includes(query)
+            );
+            displayNotes(filtered);
+        }
+
+        function exportNotes() {
+            const dataStr = JSON.stringify(notes, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mis-notas-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Notas exportadas correctamente');
+        }
+
+        function importNotes(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        notes = imported;
+                        saveToStorage();
+                        displayNotes();
+                        alert('✅ Notas importadas correctamente');
+                        
+                        if (githubConfig) {
+                            if (confirm('¿Quieres sincronizar estas notas con GitHub ahora?')) {
+                                syncWithGitHub();
+                            }
+                        }
+                    } else {
+                        alert('❌ Archivo no válido');
+                    }
+                } catch (error) {
+                    alert('❌ Error al importar: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function showStats() {
+            const modal = document.getElementById('statsModal');
+            const container = document.getElementById('statsContainer');
+
+            const total = notes.length;
+            const byCategory = {};
+            notes.forEach(note => {
+                byCategory[note.category] = (byCategory[note.category] || 0) + 1;
+            });
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <h3>${total}</h3>
+                    <p>Total de Notas</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${notes.filter(n => n.pinned).length}</h3>
+                    <p>Notas Fijadas</p>
+                </div>
+                ${Object.entries(byCategory).map(([cat, count]) => `
+                    <div class="stat-card">
+                        <h3>${count}</h3>
+                        <p>${cat}</p>
+                    </div>
+                `).join('')}
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+
+        function insertList() {
+            const content = document.getElementById('noteContent');
+            const cursorPos = content.selectionStart;
+            const textBefore = content.value.substring(0, cursorPos);
+            const textAfter = content.value.substring(cursorPos);
+            content.value = textBefore + '\n• ' + textAfter;
+            content.focus();
+            content.setSelectionRange(cursorPos + 3, cursorPos + 3);
+        }
+
+        function insertCheckbox() {
+            const content = document.getElementById('noteContent');
+            const cursorPos = content.selectionStart;
+            const textBefore = content.value.substring(0, cursorPos);
+            const textAfter = content.value.substring(cursorPos);
+            content.value = textBefore + '\n☐ ' + textAfter;
+            content.focus();
+            content.setSelectionRange(cursorPos + 3, cursorPos + 3);
+        }
+
+        // Cerrar modales al hacer click fuera
+        document.getElementById('statsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeStatsModal();
+            }
+        });
+
+        document.getElementById('configModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeConfigModal();
+            }
+        });
+    </script>
+</body>
+</html>
